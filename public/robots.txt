@@ -1,0 +1,30 @@
+TODO: 
+A robots.txt file is a plain text file placed in a website's root directory that provides instructions to web crawlers (like Googlebot) about which parts of the site they can and cannot access. It's used to prevent over-taxing a server, avoid indexing duplicate or unimportant pages, and manage the crawl budget. While most search engines respect these directives, the file is not a mandate, and malicious bots may ignore it; private information should never be concealed in a robots.txt file.
+ 
+How it works
+1. Location:
+The robots.txt file is placed in the top-level (root) directory of the website. 
+2. Fetching:
+When a crawler visits a site, it first tries to fetch the robots.txt file. 
+3. Instructions:
+The file contains rules, or directives, which tell bots which pages or directories to avoid. 
+4. Respectful Bots:
+Well-behaved bots, such as major search engine crawlers, will read these instructions and adhere to them. 
+Key Uses
+Manage Crawl Traffic:
+To prevent servers from being overwhelmed by too many requests from crawlers. 
+Control Indexing:
+To prevent search engines from indexing unimportant, redundant, or private pages. 
+Optimize Crawl Budget:
+To direct bots to focus on the most important pages and avoid wasting time on less relevant content. 
+Show Sitemap Location:
+You can include the path to your sitemap in the robots.txt file, helping search engines find and index your pages more efficiently. 
+Important Considerations
+Not a Security Measure:
+robots.txt is not a security tool and should not be used to hide private user data. 
+Not Mandatory:
+It relies on the goodwill of the bots; some bots (especially malicious ones) may ignore the instructions. 
+Publicly Accessible:
+Anyone can view your robots.txt file. 
+Syntax:
+There's a specific format for robots.txt files, and errors in syntax can cause a rule to be ignored or break the file entirely. 

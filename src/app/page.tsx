@@ -1,103 +1,165 @@
-import Image from "next/image";
+import VideoBackground from '@/components/ui/video-background';
+import ScrollIndicator from '@/components/ui/scroll-indicator';
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className='w-full'>
+      {/* Global Video Background - Fixed throughout the page */}
+      <VideoBackground videoSrc='/videos/bottle-1.mp4' />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Hero Section */}
+      <section className='relative h-screen w-full overflow-hidden'>
+        {/* Hero Content */}
+        <div
+          className='absolute inset-0 flex h-full w-full items-center justify-center'
+          style={{ zIndex: 5 }}
+        >
+          <div className='bg-opacity-40 rounded-lg bg-transparent p-8 text-center text-white backdrop-blur-sm'>
+            <h1 className='mb-4 text-6xl font-bold'>Portfolio</h1>
+            <p className='text-2xl'>Creative Developer & Designer</p>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Scroll Indicator */}
+        <div className='absolute bottom-0 left-0 w-full' style={{ zIndex: 6 }}>
+          <ScrollIndicator />
+        </div>
+      </section>
+
+      {/* About Section - Now with transparent background */}
+      <section className='relative min-h-screen w-full' style={{ zIndex: 3 }}>
+        {/* Semi-transparent background that allows video to show through */}
+        <div className='absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70'></div>
+
+        <div className='relative container mx-auto px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24'>
+          <div className='mx-auto max-w-4xl'>
+            <h2 className='mb-8 text-center text-3xl font-bold text-white sm:text-4xl lg:text-5xl'>
+              About
+            </h2>
+
+            <div className='grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16'>
+              <div className='space-y-6'>
+                <div className='rounded-lg border border-white/20 bg-white/10 p-6 backdrop-blur-md'>
+                  <p className='text-lg leading-relaxed text-white sm:text-xl'>
+                    This demonstrates scroll-controlled video background. The
+                    video plays automatically when you're at the top of the
+                    page.
+                  </p>
+                </div>
+
+                <div className='rounded-lg border border-white/20 bg-white/10 p-6 backdrop-blur-md'>
+                  <p className='text-lg leading-relaxed text-white sm:text-xl'>
+                    As you scroll, the video responds to your scroll direction
+                    and speed, creating an immersive experience throughout the
+                    entire page.
+                  </p>
+                </div>
+
+                <div className='pt-6'>
+                  <h3 className='mb-4 text-2xl font-semibold text-white'>
+                    Video Features
+                  </h3>
+                  <ul className='space-y-3 text-white'>
+                    <li className='flex items-start rounded bg-white/5 p-3'>
+                      <span className='mr-3 text-blue-400'>•</span>
+                      Fixed background throughout entire page
+                    </li>
+                    <li className='flex items-start rounded bg-white/5 p-3'>
+                      <span className='mr-3 text-blue-400'>•</span>
+                      Autoplay when in hero section
+                    </li>
+                    <li className='flex items-start rounded bg-white/5 p-3'>
+                      <span className='mr-3 text-blue-400'>•</span>
+                      Manual control based on scroll speed outside hero
+                    </li>
+                    <li className='flex items-start rounded bg-white/5 p-3'>
+                      <span className='mr-3 text-blue-400'>•</span>
+                      Forward/backward based on scroll direction
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div className='space-y-6'>
+                <div className='rounded-lg border border-white/20 bg-white/10 p-6 backdrop-blur-md'>
+                  <h4 className='mb-4 text-xl font-semibold text-white'>
+                    Scroll Behavior
+                  </h4>
+                  <p className='leading-relaxed text-white'>
+                    <strong>Hero Section:</strong> Video plays automatically at
+                    normal speed.
+                  </p>
+                  <p className='mt-2 leading-relaxed text-white'>
+                    <strong>Outside Hero:</strong> Video is controlled by your
+                    scroll - scroll down to play forward, scroll up to play
+                    backward.
+                  </p>
+                </div>
+
+                <div className='rounded-lg border border-white/20 bg-white/10 p-6 backdrop-blur-md'>
+                  <h4 className='mb-4 text-xl font-semibold text-white'>
+                    Technical Notes
+                  </h4>
+                  <p className='leading-relaxed text-white'>
+                    The video uses{' '}
+                    <code className='rounded bg-black/30 px-2 py-1'>
+                      position: fixed
+                    </code>
+                    with{' '}
+                    <code className='rounded bg-black/30 px-2 py-1'>
+                      z-index: -1
+                    </code>{' '}
+                    to stay behind all content while remaining visible
+                    throughout the page.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Test scrolling sections */}
+            <div className='mt-16 border-t border-white/20 pt-16'>
+              <h3 className='mb-8 text-center text-2xl font-bold text-white sm:text-3xl'>
+                Test Scroll Control
+              </h3>
+              <div className='rounded-lg border border-white/20 bg-white/10 p-8 backdrop-blur-md'>
+                <p className='text-center text-lg leading-relaxed text-white'>
+                  Try different scroll speeds and directions. The video should
+                  respond immediately to your scrolling behavior. Scroll slowly
+                  for precise control, or quickly for faster video playback.
+                </p>
+              </div>
+            </div>
+
+            {/* Additional scrollable content */}
+            <div className='mt-20 space-y-8'>
+              {[1, 2, 3, 4, 5].map((item) => (
+                <div
+                  key={item}
+                  className='rounded-lg border border-white/10 bg-white/5 p-8 backdrop-blur-sm'
+                >
+                  <h4 className='mb-4 text-xl font-semibold text-white'>
+                    Scroll Test Section {item}
+                  </h4>
+                  <p className='leading-relaxed text-white'>
+                    Continue scrolling to test the video control functionality.
+                    The background video should remain visible and respond to
+                    your scrolling. Notice how the video time changes based on
+                    your scroll direction and speed.
+                  </p>
+                  {item === 3 && (
+                    <div className='mt-4 rounded border border-blue-400/30 bg-blue-500/20 p-4'>
+                      <p className='text-blue-200'>
+                        <strong>Tip:</strong> Try scrolling up from here to see
+                        the video play backward!
+                      </p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
