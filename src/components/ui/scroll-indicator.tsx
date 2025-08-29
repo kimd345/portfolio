@@ -23,12 +23,12 @@ export default function ScrollIndicator() {
   return (
     <div className='fixed bottom-8 left-1/2 z-10 -translate-x-1/2 transform select-none'>
       <div className='flex animate-bounce flex-col items-center space-y-2'>
-        <span className='text-sm font-medium tracking-wide text-white opacity-80'>
+        <span className='text-sm font-medium tracking-wide text-black opacity-80'>
           SCROLL
         </span>
-        <div className='h-8 w-px bg-white opacity-60'></div>
+        <div className='h-8 w-px bg-black opacity-60'></div>
         <svg
-          className='h-4 w-4 text-white opacity-80'
+          className='h-4 w-4 text-black opacity-80'
           fill='none'
           stroke='currentColor'
           viewBox='0 0 24 24'

@@ -1,11 +1,8 @@
-import HeroSection from '@/components/sections/hero-section';
-import AboutSection from '@/components/sections/about-section';
+// src/app/page.tsx
+import { redirect } from 'next/navigation';
+import { defaultLocale } from '@/lib/i18n';
 
-export default function Home() {
-  return (
-    <div className='w-full'>
-      <HeroSection />
-      <AboutSection />
-    </div>
-  );
+// This page handles the root route and redirects to default locale
+export default function RootPage() {
+  redirect(`/${defaultLocale}`);
 }
