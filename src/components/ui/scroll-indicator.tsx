@@ -21,7 +21,7 @@ export default function ScrollIndicator() {
   if (!isVisible) return null;
 
   return (
-    <div className='fixed bottom-8 left-1/2 z-10 -translate-x-1/2 transform'>
+    <div className='fixed bottom-8 left-1/2 z-10 -translate-x-1/2 transform select-none'>
       <div className='flex animate-bounce flex-col items-center space-y-2'>
         <span className='text-sm font-medium tracking-wide text-white opacity-80'>
           SCROLL

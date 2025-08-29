@@ -5,7 +5,7 @@ import MaskCursor from '@/components/ui/mask-cursor';
 export default function HeroSection() {
   return (
     <>
-      <MaskCursor className='h-full w-full'>
+      <MaskCursor className='h-full w-full' maskSize={120}>
         <section className='relative h-screen w-full overflow-hidden'>
           {/* Video Background */}
           <VideoBackground videoSrc='/videos/bottle-1.mp4' />
@@ -23,23 +23,21 @@ export default function HeroSection() {
               <p className='mb-8 text-2xl leading-relaxed font-light opacity-90'>
                 Developer & Designer crafting digital experiences
                 <br />
-                Move your cursor to reveal the magic
+                ADVANCED LENS DISTORTION
               </p>
-              {/* buttons and other content */}
             </div>
           </div>
 
-          {/* Instructions hint - will be blurred with content */}
+          {/* Instructions hint */}
           <div className='absolute top-8 left-8 z-20 hidden md:block'>
             <div className='rounded-lg border border-white/10 bg-black/20 px-4 py-2 text-sm text-white/70 backdrop-blur-sm'>
               <span className='mr-2 inline-block h-2 w-2 animate-pulse rounded-full bg-white/50'></span>
-              Move cursor to reveal content
+              Move cursor for magical lens effects
             </div>
           </div>
         </section>
       </MaskCursor>
 
-      {/* Scroll Indicator - OUTSIDE MaskCursor so it's always clear */}
       <div className='absolute bottom-0 left-0 z-30 w-full'>
         <ScrollIndicator />
       </div>
