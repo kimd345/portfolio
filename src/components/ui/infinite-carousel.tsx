@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// src/components/ui/infinite-carousel.tsx
 'use client';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
@@ -394,9 +392,7 @@ export default function InfiniteCarousel({
 
   return (
     <div className={`relative ${className}`}>
-      {/* Gradient overlays */}
-      <div className='pointer-events-none absolute top-0 bottom-0 left-0 z-10 w-20 bg-gradient-to-r from-white via-white/80 to-transparent' />
-      <div className='pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-20 bg-gradient-to-l from-white via-white/80 to-transparent' />
+      {/* Removed gradient overlays - ISSUE 1 FIXED */}
 
       <div
         ref={containerRef}
@@ -416,6 +412,8 @@ export default function InfiniteCarousel({
           style={{
             transform: `translateX(-${currentOffset}px)`,
             willChange: 'transform',
+            // Add extra width to ensure items are fully rendered - ISSUE 2 FIX
+            width: `${totalWidth * 4}px`, // Increased from 3 to 4 sets
           }}
         >
           {/* First set */}
@@ -424,6 +422,8 @@ export default function InfiniteCarousel({
           {items.map((item, index) => renderProjectCard(item, index, 1))}
           {/* Third set for extra buffer during fast scrolling */}
           {items.map((item, index) => renderProjectCard(item, index, 2))}
+          {/* Fourth set for even more buffer - ISSUE 2 FIX */}
+          {items.map((item, index) => renderProjectCard(item, index, 3))}
         </div>
       </div>
     </div>

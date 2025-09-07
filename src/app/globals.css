@@ -27,12 +27,28 @@
 
 html {
   scroll-behavior: smooth;
+  /* Ensure smooth scrolling is disabled when Lenis is active */
+}
+
+html.lenis {
+  scroll-behavior: auto;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  /* Prevent horizontal scroll */
+  overflow-x: hidden;
+}
+
+/* Lenis smooth scroll styles */
+.lenis.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
 }
 
 /* Locale-specific font classes */
@@ -44,7 +60,16 @@ body {
   font-family: var(--font-shilla-culture), sans-serif;
 }
 
-/* Custom scrollbar */
+/* GSAP Animation Performance Optimizations */
+.gsap-element {
+  will-change: transform;
+}
+
+.gsap-element.animation-complete {
+  will-change: auto;
+}
+
+/* Custom scrollbar for non-smooth scroll areas */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -71,4 +96,49 @@ body {
 ::-moz-selection {
   background: #0070f3;
   color: white;
+}
+
+/* Utility classes for animations */
+.animate-char {
+  display: inline-block;
+  transform-origin: center bottom;
+}
+
+.parallax-element {
+  will-change: transform;
+}
+
+/* Prevent FOUC (Flash of Unstyled Content) */
+[data-scroll-container] {
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+[data-scroll-container].loaded {
+  opacity: 1;
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 768px) {
+  .gsap-element {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  .gsap-element {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Disable Lenis on reduced motion */
+  .lenis {
+    scroll-behavior: auto;
+  }
 }
