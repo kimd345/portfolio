@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Locale } from '@/lib/i18n';
 import { getLocaleFontClass } from '@/fonts';
 
@@ -12,8 +13,8 @@ interface HeroProps {
 }
 
 export default function HeroSection({ locale }: HeroProps) {
-  const heroRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
 
   const content = {
     en: {
@@ -27,29 +28,67 @@ export default function HeroSection({ locale }: HeroProps) {
   };
 
   const t = content[locale];
-  const heroFontClass = getLocaleFontClass(locale);
+  const heroFontClass = locale === 'ko' ? 'font-hero-ko' : 'font-hero-en';
 
   useEffect(() => {
     setMounted(true);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('animate-slide-up');
-          }
-        });
-      },
-      { threshold: 0.1 },
-    );
-
-    if (heroRef.current) {
-      const elements = heroRef.current.querySelectorAll('.animate-on-scroll');
-      elements.forEach((el) => observer.observe(el));
-    }
-
-    return () => observer.disconnect();
   }, []);
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: shouldReduceMotion ? 0.3 : 0.8,
+        staggerChildren: shouldReduceMotion ? 0.1 : 0.2,
+        delayChildren: shouldReduceMotion ? 0.1 : 0.3,
+      },
+    },
+  };
+
+  const nameVariants = {
+    hidden: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : 60,
+      scale: shouldReduceMotion ? 1 : 0.9,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: shouldReduceMotion ? 0.3 : 0.8,
+        ease: 'easeOut' as const,
+      },
+    },
+  };
+
+  const titleVariants = {
+    hidden: {
+      opacity: 0,
+      x: shouldReduceMotion ? 0 : 40,
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: shouldReduceMotion ? 0.2 : 0.6,
+        ease: 'easeOut' as const,
+      },
+    },
+  };
+
+  const titlesContainerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: shouldReduceMotion ? 0.05 : 0.15,
+        delayChildren: shouldReduceMotion ? 0.2 : 0.5,
+      },
+    },
+  };
 
   if (!mounted) {
     return (
@@ -67,68 +106,84 @@ export default function HeroSection({ locale }: HeroProps) {
           <VideoBackground videoSrc='/videos/bottle-1.mp4' />
 
           {/* Hero Content */}
-          {/* Content */}
-          <div className='relative z-10 flex h-full w-full'>
+          <motion.div
+            className='relative z-10 flex h-full w-full'
+            variants={containerVariants}
+            initial='hidden'
+            animate='visible'
+          >
             {/* Desktop Layout */}
             <div className='hidden h-full w-full lg:flex'>
               {/* Left side - Name */}
-              <div className='flex flex-1 items-center justify-start pl-8 xl:pl-16'>
-                <div className='animate-on-scroll'>
+              <div className='flex flex-1 items-center justify-center pl-8 xl:pl-16'></div>
+
+              {/* Right side - Name and Titles */}
+              <div className='flex flex-1 flex-col items-end justify-center gap-24 pr-8 xl:pr-16'>
+                {/* Name */}
+                <motion.div variants={nameVariants}>
                   <h1
-                    className={`text-6xl leading-none font-normal text-gray-900 xl:text-7xl 2xl:text-8xl ${heroFontClass}`}
+                    className={`text-6xl leading-none font-normal text-gray-900 ${heroFontClass}`}
                     style={{
-                      writingMode: 'vertical-rl',
+                      writingMode: 'vertical-lr',
                       textOrientation: 'upright',
-                      letterSpacing: '0.1em',
+                      letterSpacing: locale === 'ko' ? '0.5em' : '-0.6em',
                     }}
                   >
                     {t.name}
                   </h1>
-                </div>
-              </div>
+                </motion.div>
 
-              {/* Right side - Titles */}
-              <div className='flex flex-1 items-center justify-end pr-8 xl:pr-16'>
-                <div className='animate-on-scroll space-y-4 text-right'>
+                {/* Titles */}
+                <motion.div
+                  className='space-y-4 text-right'
+                  variants={titlesContainerVariants}
+                >
                   {t.titles.map((title, index) => (
-                    <div
+                    <motion.div
                       key={title}
                       className='text-2xl leading-tight font-medium text-gray-900 xl:text-3xl 2xl:text-4xl'
-                      style={{ animationDelay: `${(index + 1) * 0.2}s` }}
+                      variants={titleVariants}
                     >
                       {title}
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </div>
             </div>
 
             {/* Mobile Layout */}
-            <div className='flex h-full w-full flex-col items-center justify-center space-y-16 px-8 text-center lg:hidden'>
+            <div className='flex h-full w-full flex-col items-center justify-center space-y-16 text-center lg:hidden'>
               {/* Name */}
-              <div className='animate-on-scroll'>
+              <motion.div variants={nameVariants}>
                 <h1
-                  className={`text-5xl leading-none font-normal text-gray-900 sm:text-6xl ${heroFontClass}`}
-                  style={{ letterSpacing: '0.1em' }}
+                  className={`text-3xl leading-none font-normal text-gray-900 sm:text-4xl ${heroFontClass}`}
+                  style={{
+                    writingMode: 'vertical-lr',
+                    textOrientation: 'upright',
+                    letterSpacing: locale === 'ko' ? '0.5em' : '-0.6em',
+                  }}
                 >
                   {t.name}
                 </h1>
-              </div>
+              </motion.div>
 
               {/* Titles */}
-              <div className='animate-on-scroll space-y-4'>
+              <motion.div
+                className='space-y-4'
+                variants={titlesContainerVariants}
+              >
                 {t.titles.map((title, index) => (
-                  <div
+                  <motion.div
                     key={title}
-                    className='text-xl leading-tight font-medium text-gray-900 sm:text-2xl'
-                    style={{ animationDelay: `${(index + 1) * 0.2}s` }}
+                    className='text-right text-xl leading-tight font-medium text-gray-900 sm:text-2xl'
+                    variants={titleVariants}
                   >
                     {title}
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         </section>
       </MaskCursor>
 

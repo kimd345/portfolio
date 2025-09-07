@@ -31,11 +31,14 @@ export default function MaskCursor({
   const [currentBubbleSize, setCurrentBubbleSize] = useState(maskSize * 2.35);
   const [isStationary, setIsStationary] = useState(false);
   const [isWindowFocused, setIsWindowFocused] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(true); // New state to track initialization
   const containerRef = useRef<HTMLDivElement>(null);
   const velocityRef = useRef({ x: 0, y: 0 });
   const lastUpdateTime = useRef(Date.now());
+  const lastMousePosition = useRef({ x: 0, y: 0 }); // Track last mouse position
   const stationaryTimeout = useRef<NodeJS.Timeout | null>(null);
   const floatingAnimationFrame = useRef<number | null>(null);
+  const focusRestoreTimeout = useRef<NodeJS.Timeout | null>(null); // New timeout for focus restoration
 
   // Check user's motion preferences
   const shouldReduceMotion = useReducedMotion();
@@ -94,30 +97,55 @@ export default function MaskCursor({
     mass: 0.5,
   });
 
+  // Reset stationary state and clear timeouts
+  const resetStationaryState = () => {
+    setIsStationary(false);
+    if (stationaryTimeout.current) {
+      clearTimeout(stationaryTimeout.current);
+      stationaryTimeout.current = null;
+    }
+    if (focusRestoreTimeout.current) {
+      clearTimeout(focusRestoreTimeout.current);
+      focusRestoreTimeout.current = null;
+    }
+  };
+
+  // Stop floating animation
+  const stopFloatingAnimation = () => {
+    if (floatingAnimationFrame.current) {
+      cancelAnimationFrame(floatingAnimationFrame.current);
+      floatingAnimationFrame.current = null;
+    }
+    floatingX.set(0);
+    floatingY.set(0);
+  };
+
   // Window focus/blur event handlers
   useEffect(() => {
     const handleFocus = () => {
       setIsWindowFocused(true);
+      setIsInitializing(true); // Set initializing state when regaining focus
+
+      // Clear any existing timeouts and reset states
+      resetStationaryState();
+      stopFloatingAnimation();
+
+      // Set a brief delay before allowing stationary detection
+      // This prevents immediate stationary detection during focus restoration
+      focusRestoreTimeout.current = setTimeout(() => {
+        setIsInitializing(false);
+      }, 500); // 500ms grace period after focus restoration
     };
 
     const handleBlur = () => {
       setIsWindowFocused(false);
-      // Reset stationary state when window loses focus
-      setIsStationary(false);
-      // Clear any ongoing floating animation
-      if (floatingAnimationFrame.current) {
-        cancelAnimationFrame(floatingAnimationFrame.current);
-        floatingAnimationFrame.current = null;
-      }
-      // Reset floating values
-      floatingX.set(0);
-      floatingY.set(0);
-      // Clear stationary timeout
-      if (stationaryTimeout.current) {
-        clearTimeout(stationaryTimeout.current);
-        stationaryTimeout.current = null;
-      }
+      resetStationaryState();
+      stopFloatingAnimation();
+      setIsInitializing(false);
     };
+
+    // Set initial focus state
+    setIsWindowFocused(document.hasFocus());
 
     window.addEventListener('focus', handleFocus);
     window.addEventListener('blur', handleBlur);
@@ -132,33 +160,36 @@ export default function MaskCursor({
   useEffect(() => {
     const unsubscribeX = maskX.on('change', (x) => {
       setMaskPos((prev) => {
-        // Only calculate velocity if window is focused
-        if (isWindowFocused) {
+        // Only calculate velocity if window is focused and not initializing
+        if (isWindowFocused && !isInitializing) {
           const now = Date.now();
           if (now - lastUpdateTime.current > 16) {
             // ~60fps throttling
             const dx = x - prev.x;
             const dy = maskY.get() - prev.y;
             const velocity = Math.sqrt(dx * dx + dy * dy);
+
+            // Check if mouse actually moved (not just spring settling)
+            const mouseMovedSignificantly =
+              Math.abs(x - lastMousePosition.current.x) > 1 ||
+              Math.abs(maskY.get() - lastMousePosition.current.y) > 1;
+
             velocityRef.current = { x: dx, y: dy };
             maskVelocity.set(Math.min(velocity * 2, 15));
             lastUpdateTime.current = now;
 
             // Detect stationary state for floating animation
-            if (velocity < 0.1) {
+            // Only if mouse has moved significantly and velocity is low
+            if (velocity < 0.1 && mouseMovedSignificantly) {
               if (!stationaryTimeout.current) {
                 stationaryTimeout.current = setTimeout(() => {
-                  if (isWindowFocused) {
+                  if (isWindowFocused && !isInitializing) {
                     setIsStationary(true);
                   }
                 }, 1000); // Start floating after 1 second of being stationary
               }
             } else {
-              if (stationaryTimeout.current) {
-                clearTimeout(stationaryTimeout.current);
-                stationaryTimeout.current = null;
-              }
-              setIsStationary(false);
+              resetStationaryState();
             }
           }
         }
@@ -194,9 +225,12 @@ export default function MaskCursor({
       unsubscribeBubbleSize();
       unsubscribeFloatingX();
       unsubscribeFloatingY();
-      // Clean up timeout
+      // Clean up timeouts
       if (stationaryTimeout.current) {
         clearTimeout(stationaryTimeout.current);
+      }
+      if (focusRestoreTimeout.current) {
+        clearTimeout(focusRestoreTimeout.current);
       }
       // Clean up floating animation
       if (floatingAnimationFrame.current) {
@@ -212,6 +246,7 @@ export default function MaskCursor({
     smoothFloatingX,
     smoothFloatingY,
     isWindowFocused,
+    isInitializing, // Add isInitializing as dependency
   ]);
 
   useEffect(() => {
@@ -221,9 +256,17 @@ export default function MaskCursor({
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
+        // Update last mouse position for tracking actual movement
+        lastMousePosition.current = { x, y };
+
         // Update motion values - spring will handle the smooth following
         mouseX.set(x);
         mouseY.set(y);
+
+        // Reset stationary state when mouse moves
+        if (!isInitializing) {
+          resetStationaryState();
+        }
       }
     };
 
@@ -235,12 +278,13 @@ export default function MaskCursor({
 
     const handleMouseLeave = () => {
       setIsHovering(false);
-      // Reset stationary state when mouse leaves
-      setIsStationary(false);
-      if (stationaryTimeout.current) {
-        clearTimeout(stationaryTimeout.current);
-        stationaryTimeout.current = null;
-      }
+      resetStationaryState();
+      stopFloatingAnimation();
+    };
+
+    // Add click handler to prevent stationary detection during click events
+    const handleClick = () => {
+      resetStationaryState();
     };
 
     const container = containerRef.current;
@@ -248,6 +292,7 @@ export default function MaskCursor({
       container.addEventListener('mousemove', handleMouseMove);
       container.addEventListener('mouseenter', handleMouseEnter);
       container.addEventListener('mouseleave', handleMouseLeave);
+      container.addEventListener('click', handleClick);
     }
 
     return () => {
@@ -255,9 +300,10 @@ export default function MaskCursor({
         container.removeEventListener('mousemove', handleMouseMove);
         container.removeEventListener('mouseenter', handleMouseEnter);
         container.removeEventListener('mouseleave', handleMouseLeave);
+        container.removeEventListener('click', handleClick);
       }
     };
-  }, [mouseX, mouseY, isWindowFocused]);
+  }, [mouseX, mouseY, isWindowFocused, isInitializing]);
 
   // Animation variants for bubble entrance/exit with advanced visual effects
   const bubbleVariants: Variants = {
@@ -319,9 +365,14 @@ export default function MaskCursor({
     },
   };
 
-  // Handle floating animation - only when window is focused
+  // Handle floating animation - only when window is focused and not initializing
   useEffect(() => {
-    if (isStationary && !shouldReduceMotion && isWindowFocused) {
+    if (
+      isStationary &&
+      !shouldReduceMotion &&
+      isWindowFocused &&
+      !isInitializing
+    ) {
       // Start floating animation
       const animateFloat = () => {
         const now = Date.now();
@@ -340,23 +391,21 @@ export default function MaskCursor({
         }
       };
     } else {
-      // Reset to center when not floating or window not focused
-      floatingX.set(0);
-      floatingY.set(0);
-
-      // Clean up any existing animation
-      if (floatingAnimationFrame.current) {
-        cancelAnimationFrame(floatingAnimationFrame.current);
-        floatingAnimationFrame.current = null;
-      }
+      stopFloatingAnimation();
     }
-  }, [isStationary, shouldReduceMotion, floatingX, floatingY, isWindowFocused]);
+  }, [
+    isStationary,
+    shouldReduceMotion,
+    floatingX,
+    floatingY,
+    isWindowFocused,
+    isInitializing,
+  ]);
 
-  const bubbleSize = maskSize * 2.35;
-
-  // Determine animation state based on cursor behavior - only when window is focused
+  // Determine animation state based on cursor behavior
   const getCurrentVariant = () => {
-    if (!isWindowFocused) return 'visible'; // Simple visible state when window not focused
+    // Never show floating state during initialization or when window not focused
+    if (!isWindowFocused || isInitializing) return 'visible';
     if (isStationary && !shouldReduceMotion) return 'floating';
     return 'visible';
   };

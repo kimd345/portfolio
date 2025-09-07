@@ -1,6 +1,6 @@
 // src/app/[locale]/page.tsx
 import HeroSection from '@/components/sections/hero-section';
-import AboutSection from '@/components/sections/about-section';
+import ProjectsSection from '@/components/sections/projects-section';
 import { Locale } from '@/lib/i18n';
 
 interface HomeProps {
@@ -13,7 +13,7 @@ export default async function Home({ params }: HomeProps) {
   return (
     <div className='w-full'>
       <HeroSection locale={locale} />
-      <AboutSection />
+      <ProjectsSection locale={locale} />
       {/* Add sections for projects, journey, gallery */}
     </div>
   );
