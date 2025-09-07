@@ -1,23 +1,22 @@
-// src/components/providers/gsap-provider.tsx
 'use client';
 
 import { useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { TextPlugin } from 'gsap/TextPlugin';
-import { MorphSVGPlugin } from 'gsap/MorphSVGPlugin';
 import Lenis from 'lenis';
 
 // Register GSAP plugins
 if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger, TextPlugin, MorphSVGPlugin);
+  gsap.registerPlugin(ScrollTrigger);
 }
 
-interface GSAPProviderProps {
+interface AnimationProviderProps {
   children: React.ReactNode;
 }
 
-export default function GSAPProvider({ children }: GSAPProviderProps) {
+export default function AnimationProvider({
+  children,
+}: AnimationProviderProps) {
   useEffect(() => {
     // Initialize Lenis for smooth scrolling
     const lenis = new Lenis({

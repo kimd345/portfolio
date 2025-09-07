@@ -1,17 +1,15 @@
-// src/app/layout.tsx
 import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Dan Kim | 김동혁',
-  description: 'Creative portfolio showcasing projects and journey',
+  title: 'Scroll Animation App',
+  description: 'Next.js app with scroll-driven animations',
 };
 
-// Root layout - minimal setup to avoid hydration issues
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return children;
 }

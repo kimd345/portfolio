@@ -1,6 +1,5 @@
-// src/app/[locale]/page.tsx
 import { Locale } from '@/lib/i18n';
-import PortfolioExperience from '@/components/portfolio/portfolio-experience';
+import HeroSection from '@/components/sections/hero';
 
 interface HomeProps {
   params: Promise<{ locale: Locale }>;
@@ -9,10 +8,14 @@ interface HomeProps {
 export default async function Home({ params }: HomeProps) {
   const { locale } = await params;
 
-  return <PortfolioExperience locale={locale} />;
+  return (
+    <div className='relative'>
+      <HeroSection locale={locale} />
+      {/* Add more sections here */}
+    </div>
+  );
 }
 
-// Generate static params for all locales
 export async function generateStaticParams() {
   const locales: Locale[] = ['en', 'ko'];
   return locales.map((locale) => ({ locale }));
