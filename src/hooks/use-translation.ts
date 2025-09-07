@@ -5,35 +5,35 @@ const translations = {
   en: {
     header: {
       navigation: {
-        home: 'Home',
-        about: 'About',
         projects: 'Projects',
+        journey: 'Journey',
+        gallery: 'Gallery',
         contact: 'Contact',
       },
     },
     hero: {
-      title: 'Welcome to Our App',
-      subtitle: 'Building amazing experiences with scroll animations',
+      title: 'Creative Developer',
+      subtitle: 'Crafting Digital Experiences with Code & Art',
       description:
-        'This is a clean boilerplate for creating scroll-driven animations with Next.js, GSAP, and Lenis.',
-      cta: 'Get Started',
+        'Bridging the gap between design and technology to create immersive, scroll-driven experiences that captivate and inspire.',
+      cta: 'Explore My Work',
     },
   },
   ko: {
     header: {
       navigation: {
-        home: '홈',
-        about: '소개',
         projects: '프로젝트',
+        journey: '여정',
+        gallery: '갤러리',
         contact: '연락처',
       },
     },
     hero: {
-      title: '우리 앱에 오신 것을 환영합니다',
-      subtitle: '스크롤 애니메이션으로 놀라운 경험을 만들어보세요',
+      title: '크리에이티브 개발자',
+      subtitle: '코드와 아트로 디지털 경험을 만들어가다',
       description:
-        'Next.js, GSAP, Lenis를 사용한 스크롤 기반 애니메이션을 위한 깔끔한 보일러플레이트입니다.',
-      cta: '시작하기',
+        '디자인과 기술의 경계를 넘나들며 몰입감 있고 감동적인 스크롤 기반 경험을 창조합니다.',
+      cta: '작품 둘러보기',
     },
   },
 } as const;
